@@ -1,0 +1,20 @@
+apiVersion: v2
+description: Focus Talk team collaboration and messaging server deployment.
+name: focustalk
+type: application
+version: 1.0.0
+appVersion: 1.0.0
+keywords:
+- focustalk
+- focus-talk
+- communication
+- messaging
+- team collaboration
+home: https://focushive.com
+icon: https://raw.githubusercontent.com/FocusHive/FocusTalk/main/webapp/channels/src/images/logo.png
+maintainers:
+  - name: FocusHive
+    email: info@focushive.com
+sources:
+- https://github.com/FocusHive/FocusTalk
+- https://github.com/FocusHive/focustalk-helm

@@ -31,8 +31,8 @@ spec:
         app.kubernetes.io/component: {{ .Values.global.features.jobserver.name }}
         helm.sh/chart: {{ include "mattermost.chart" . }}
       annotations:
-        {{- if .Values.mattermostApp.extraPodAnnotations }}
-        {{- .Values.mattermostApp.extraPodAnnotations | toYaml | nindent 8 }}
+        {{- if .Values.focustalkApp.extraPodAnnotations }}
+        {{- .Values.focustalkApp.extraPodAnnotations | toYaml | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.global.features.jobserver.nodeSelector }}
@@ -47,18 +47,18 @@ spec:
       tolerations:
       {{- toYaml .Values.global.features.jobserver.tolerations | nindent 6 }}
       {{- end }}
-      {{- if .Values.mattermostApp.securityContext }}
+      {{- if .Values.focustalkApp.securityContext }}
       securityContext:
-        {{- toYaml .Values.mattermostApp.securityContext | nindent 8 }}
+        {{- toYaml .Values.focustalkApp.securityContext | nindent 8 }}
       {{- end }}
-      {{- if .Values.mattermostApp.imagePullSecrets }}
+      {{- if .Values.focustalkApp.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.mattermostApp.imagePullSecrets | nindent 6 }}
+      {{- toYaml .Values.focustalkApp.imagePullSecrets | nindent 6 }}
       {{- end }}
       containers:
       - name: {{ include "mattermost.name" . }}-jobserver
-        image: "{{ .Values.mattermostApp.image.repository }}:{{ .Values.mattermostApp.image.tag }}"
-        imagePullPolicy: {{ .Values.mattermostApp.image.pullPolicy }}
+        image: "{{ .Values.focustalkApp.image.repository }}:{{ .Values.focustalkApp.image.tag }}"
+        imagePullPolicy: {{ .Values.focustalkApp.image.pullPolicy }}
         command: ["mattermost", "jobserver"]
         env:
         - name: MM_CONFIG

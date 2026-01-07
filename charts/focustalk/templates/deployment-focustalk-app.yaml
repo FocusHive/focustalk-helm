@@ -9,14 +9,14 @@ metadata:
     app.kubernetes.io/component: server
     helm.sh/chart:  {{ include "mattermost.chart" . }}
 spec:
-  {{- if not .Values.mattermostApp.autoscaling.enabled }}
-  replicas: {{ .Values.mattermostApp.replicaCount }}
+  {{- if not .Values.focustalkApp.autoscaling.enabled }}
+  replicas: {{ .Values.focustalkApp.replicaCount }}
   {{- end }}
-  {{- with .Values.mattermostApp.strategy }}
+  {{- with .Values.focustalkApp.strategy }}
   strategy:
     {{- . | toYaml | nindent 4 }}
   {{- end }}
-  revisionHistoryLimit: {{ .Values.mattermostApp.revisionHistoryLimit }}
+  revisionHistoryLimit: {{ .Values.focustalkApp.revisionHistoryLimit }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "mattermost.name" . }}
@@ -33,51 +33,51 @@ spec:
         helm.sh/chart: {{ include "mattermost.chart" . }}
       annotations:
         prometheus.io/scrape: "true"
-        prometheus.io/port: "{{ .Values.mattermostApp.service.metricsPort }}"
+        prometheus.io/port: "{{ .Values.focustalkApp.service.metricsPort }}"
         prometheus.io/path: "/metrics"
-        {{- if .Values.mattermostApp.extraPodAnnotations }}
-        {{- .Values.mattermostApp.extraPodAnnotations | toYaml | nindent 8 }}
+        {{- if .Values.focustalkApp.extraPodAnnotations }}
+        {{- .Values.focustalkApp.extraPodAnnotations | toYaml | nindent 8 }}
         {{- end }}
     spec:
-      {{- if .Values.mattermostApp.nodeSelector }}
+      {{- if .Values.focustalkApp.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.mattermostApp.nodeSelector | nindent 8 }}
+        {{- toYaml .Values.focustalkApp.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.mattermostApp.affinity }}
+      {{- if .Values.focustalkApp.affinity }}
       affinity:
-        {{- toYaml .Values.mattermostApp.affinity | nindent 8 }}
+        {{- toYaml .Values.focustalkApp.affinity | nindent 8 }}
       {{- end }}
-      {{- if .Values.mattermostApp.tolerations }}
+      {{- if .Values.focustalkApp.tolerations }}
       tolerations:
-      {{- toYaml .Values.mattermostApp.tolerations | nindent 6 }}
+      {{- toYaml .Values.focustalkApp.tolerations | nindent 6 }}
       {{- end }}
-      {{- if .Values.mattermostApp.securityContext }}
+      {{- if .Values.focustalkApp.securityContext }}
       securityContext:
-        {{- toYaml .Values.mattermostApp.securityContext | nindent 8 }}
+        {{- toYaml .Values.focustalkApp.securityContext | nindent 8 }}
       {{- end }}
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       {{- end }}
-      {{- if .Values.mattermostApp.imagePullSecrets }}
+      {{- if .Values.focustalkApp.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.mattermostApp.imagePullSecrets | nindent 6 }}
+      {{- toYaml .Values.focustalkApp.imagePullSecrets | nindent 6 }}
       {{- end }}
-      {{- if .Values.mattermostApp.extraInitContainers }}
+      {{- if .Values.focustalkApp.extraInitContainers }}
       initContainers:
-      {{- .Values.mattermostApp.extraInitContainers | toYaml | nindent 6 }}
+      {{- .Values.focustalkApp.extraInitContainers | toYaml | nindent 6 }}
       {{- end }}
       containers:
       - name: {{ include "mattermost.name" . }}
-        image: "{{ .Values.mattermostApp.image.repository }}:{{ .Values.mattermostApp.image.tag }}"
-        imagePullPolicy: {{ .Values.mattermostApp.image.pullPolicy }}
+        image: "{{ .Values.focustalkApp.image.repository }}:{{ .Values.focustalkApp.image.tag }}"
+        imagePullPolicy: {{ .Values.focustalkApp.image.pullPolicy }}
         ports:
-        - containerPort: {{ .Values.mattermostApp.service.internalPort }}
+        - containerPort: {{ .Values.focustalkApp.service.internalPort }}
           name: api
-        - containerPort: {{ .Values.mattermostApp.service.metricsPort }}
+        - containerPort: {{ .Values.focustalkApp.service.metricsPort }}
           name: metrics
-        - containerPort: {{ .Values.mattermostApp.service.clusterPort }}
+        - containerPort: {{ .Values.focustalkApp.service.clusterPort }}
           name: cluster
-        - containerPort: {{ .Values.mattermostApp.service.gossipPort }}
+        - containerPort: {{ .Values.focustalkApp.service.gossipPort }}
           name: gossip
         env:
         - name: MM_CONFIG
@@ -93,7 +93,7 @@ spec:
         - name: MM_SERVICESETTINGS_SITEURL
           value: "{{ .Values.global.siteUrl }}"
         - name: MM_SERVICESETTINGS_LISTENADDRESS
-          value: ":{{ .Values.mattermostApp.service.internalPort }}"
+          value: ":{{ .Values.focustalkApp.service.internalPort }}"
 {{- if .Values.global.features.jobserver.enabled }}
         - name: MM_JOBSETTINGS_RUNJOBS
           value: "false"
@@ -133,10 +133,10 @@ spec:
           value: "{{ .Values.global.features.fileStore.secretAccessKey }}"
         {{- end }}
 {{- end }}
-{{- with .Values.mattermostApp.extraEnv }}
+{{- with .Values.focustalkApp.extraEnv }}
 {{ toYaml . | indent 8 }}
 {{- end }}
-        {{- with .Values.mattermostApp.envFrom }}
+        {{- with .Values.focustalkApp.envFrom }}
         envFrom:
           {{- toYaml . | nindent 10 }}
         {{- end }}
@@ -146,14 +146,14 @@ spec:
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.mattermostApp.service.internalPort }}
+            port: {{ .Values.focustalkApp.service.internalPort }}
         readinessProbe:
           initialDelaySeconds: 15
           timeoutSeconds: 5
           periodSeconds: 15
           httpGet:
             path: /api/v4/system/ping
-            port: {{ .Values.mattermostApp.service.internalPort }}
+            port: {{ .Values.focustalkApp.service.internalPort }}
         volumeMounts:
         {{- if .Values.global.existingLicenseSecret.name }}
         - mountPath: /mattermost/{{.Values.global.existingLicenseSecret.key }}
@@ -168,11 +168,11 @@ spec:
           name: mattermost-plugins
         - mountPath: /mattermost/client/plugins/
           name: mattermost-plugins-client
-{{- if .Values.mattermostApp.extraVolumeMounts }}
-{{ toYaml .Values.mattermostApp.extraVolumeMounts | indent 8 }}
+{{- if .Values.focustalkApp.extraVolumeMounts }}
+{{ toYaml .Values.focustalkApp.extraVolumeMounts | indent 8 }}
 {{- end }}
         resources:
-{{ toYaml .Values.mattermostApp.resources | indent 10 }}
+{{ toYaml .Values.focustalkApp.resources | indent 10 }}
       volumes:
       - name: mattermost-plugins
         emptyDir: {}
@@ -187,6 +187,6 @@ spec:
           {{- else }}
           secretName: {{ include "mattermost.fullname" . }}-mattermost-license
           {{- end }}
-{{- if .Values.mattermostApp.extraVolumes }}
-{{ toYaml .Values.mattermostApp.extraVolumes | indent 6 }}
+{{- if .Values.focustalkApp.extraVolumes }}
+{{ toYaml .Values.focustalkApp.extraVolumes | indent 6 }}
 {{- end }}

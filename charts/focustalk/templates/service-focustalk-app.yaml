@@ -13,21 +13,21 @@ spec:
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: server
-  type: {{ .Values.mattermostApp.service.type }}
+  type: {{ .Values.focustalkApp.service.type }}
   ports:
-  - port: {{ .Values.mattermostApp.service.externalPort }}
-    targetPort: {{ .Values.mattermostApp.service.internalPort }}
+  - port: {{ .Values.focustalkApp.service.externalPort }}
+    targetPort: {{ .Values.focustalkApp.service.internalPort }}
     protocol: TCP
-    name: {{ .Values.mattermostApp.service.name }}
-  - port: {{ .Values.mattermostApp.service.metricsPort }}
-    targetPort: {{ .Values.mattermostApp.service.metricsPort }}
+    name: {{ .Values.focustalkApp.service.name }}
+  - port: {{ .Values.focustalkApp.service.metricsPort }}
+    targetPort: {{ .Values.focustalkApp.service.metricsPort }}
     protocol: TCP
-    name: {{ .Values.mattermostApp.service.metricsName }}
-  - port: {{ .Values.mattermostApp.service.clusterPort }}
-    targetPort: {{ .Values.mattermostApp.service.clusterPort }}
+    name: {{ .Values.focustalkApp.service.metricsName }}
+  - port: {{ .Values.focustalkApp.service.clusterPort }}
+    targetPort: {{ .Values.focustalkApp.service.clusterPort }}
     protocol: TCP
     name: cluster
-  - port: {{ .Values.mattermostApp.service.gossipPort }}
-    targetPort: {{ .Values.mattermostApp.service.gossipPort }}
+  - port: {{ .Values.focustalkApp.service.gossipPort }}
+    targetPort: {{ .Values.focustalkApp.service.gossipPort }}
     protocol: TCP
     name: gossip

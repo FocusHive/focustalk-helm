@@ -1,4 +1,4 @@
-{{- if .Values.mattermostApp.autoscaling.enabled }}
+{{- if .Values.focustalkApp.autoscaling.enabled }}
 {{- if semverCompare ">= 1.25-0" .Capabilities.KubeVersion.Version }}
 apiVersion: autoscaling/v2
 {{ else }}
@@ -17,11 +17,11 @@ spec:
     apiVersion: {{ template "mattermost.deployment.apiVersion" . }}
     kind: Deployment
     name: {{ include "mattermost.fullname" . }}
-  minReplicas: {{ .Values.mattermostApp.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.mattermostApp.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.focustalkApp.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.focustalkApp.autoscaling.maxReplicas }}
   metrics:
 {{- if semverCompare ">= 1.25-0" .Capabilities.KubeVersion.Version }}
-  {{- with .Values.mattermostApp.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- with .Values.focustalkApp.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
@@ -29,7 +29,7 @@ spec:
           type: Utilization
           averageUtilization: {{ . }}
   {{- end }}
-  {{- with .Values.mattermostApp.autoscaling.targetCPUUtilizationPercentage }}
+  {{- with .Values.focustalkApp.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
@@ -38,13 +38,13 @@ spec:
           averageUtilization: {{ . }}
   {{- end }}
 {{- else }}
-  {{- with .Values.mattermostApp.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- with .Values.focustalkApp.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         targetAverageUtilization: {{ . }}
   {{- end }}
-  {{- with .Values.mattermostApp.autoscaling.targetCPUUtilizationPercentage }}
+  {{- with .Values.focustalkApp.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu

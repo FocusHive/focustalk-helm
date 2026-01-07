@@ -1,7 +1,7 @@
 global:
-  # REQUIRED: URL users will access Mattermost at
-  siteUrl: "http://mattermost.example.com"
-  # OPTIONAL: Mattermost Enterprise license
+  # REQUIRED: URL users will access Focus Talk at
+  siteUrl: "https://talk.focushive.example.com"
+  # OPTIONAL: Focus Talk Enterprise license (compatible with Mattermost Enterprise)
   # Option 1: Provide license content directly
   mattermostLicense: ""
   # Option 2: Use an existing secret
@@ -15,7 +15,7 @@ global:
       driver: "postgres" # postgres
       dataSource: "" # Connection string - REQUIRED
       dataSourceReplicas: [] # Optional read replicas
-      # Use an existing secret for database credentials (see secret-mattermost-dbsecret.yaml for required fields)
+      # Use an existing secret for database credentials
       existingDatabaseSecret:
         name:
         key:
@@ -32,11 +32,11 @@ global:
       accessKeyId: ""
       secretAccessKey: ""
       # Option 2: Use an existing Kubernetes Secret (recommended)
-      # Example: kubectl create secret generic mattermost-s3-creds \
+      # Example: kubectl create secret generic focustalk-s3-creds \
       #   --from-literal=accessKeyId=YOUR_KEY \
       #   --from-literal=secretAccessKey=YOUR_SECRET
       existingSecret:
-        name: "" # Name of the Kubernetes Secret (e.g., "mattermost-s3-creds")
+        name: "" # Name of the Kubernetes Secret (e.g., "focustalk-s3-creds")
         accessKeyIdKey: "accessKeyId" # Key in the secret containing access key ID
         secretAccessKeyKey: "secretAccessKey" # Key in the secret containing secret access key
 
@@ -50,23 +50,23 @@ global:
         rollingUpdate: null
       revisionHistoryLimit: 2
       service:
-        name: mattermost-app-jobserver
+        name: focustalk-app-jobserver
         type: ClusterIP
       nodeSelector: {}
       affinity: {}
       tolerations: []
       extraEnv: []
 
-# Mattermost deployment section.
-mattermostApp:
+# Focus Talk deployment section.
+focustalkApp:
   replicaCount: 2
   image:
-    repository: mattermost/mattermost-enterprise-edition
-    tag: 11.1.1@sha256:b795441466ef1b3df0e8a6c5d4f177da7db5d792cba20072f947c693f36442e6
+    repository: ghcr.io/focushive/focustalk-server
+    tag: "1.0.0"
     pullPolicy: IfNotPresent
   # Image pull secrets for private registries
   imagePullSecrets: []
-    # - name: harbor-secret
+    # - name: ghcr-secret
     # - name: registry-credentials
 
   strategy:
@@ -77,23 +77,23 @@ mattermostApp:
   revisionHistoryLimit: 2
 
   service:
-    name: mattermost-app
+    name: focustalk-app
     type: ClusterIP
     externalPort: 8065
     internalPort: 8065
     metricsPort: 8067
     clusterPort: 8075 # Required for cluster communication between replicas
     gossipPort: 8074 # Required for gossip protocol between replicas
-    metricsName: mattermost-app-metrics
+    metricsName: focustalk-app-metrics
 
   ingress:
     enabled: false
     hosts:
-      - mattermost.example.com
+      - talk.focushive.example.com
     tls: []
-      # - secretName: mattermost-tls
+      # - secretName: focustalk-tls
       #   hosts:
-      #     - mattermost.example.com
+      #     - talk.focushive.example.com
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -101,7 +101,7 @@ mattermostApp:
       # nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
       # nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       # nginx.ingress.kubernetes.io/configuration-snippet: |
-      #   proxy_cache mattermost_cache;
+      #   proxy_cache focustalk_cache;
       #   proxy_cache_revalidate on;
       #   proxy_cache_min_uses 2;
       #   proxy_cache_use_stale timeout;
@@ -139,7 +139,6 @@ mattermostApp:
   extraVolumes: []
   extraVolumeMounts: []
   ## Additional environment variables for advanced configuration
-  ## See: https://docs.mattermost.com/administration/config-settings.html
   extraEnv: []
   envFrom: []
   extraPodAnnotations: {}
