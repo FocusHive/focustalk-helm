@@ -1,15 +1,15 @@
 {{- if .Values.focustalkApp.ingress.enabled -}}
-{{- $serviceName := include "mattermost.fullname" . -}}
+{{- $serviceName := include "focustalk.fullname" . -}}
 {{- $servicePort := .Values.focustalkApp.service.externalPort -}}
-apiVersion: {{ include "mattermost.ingress.apiVersion" . }}
+apiVersion: {{ include "focustalk.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ include "mattermost.fullname" . }}
+  name: {{ include "focustalk.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mattermost.name" . }}
+    app.kubernetes.io/name: {{ include "focustalk.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart:  {{ include "mattermost.chart" . }}
+    helm.sh/chart:  {{ include "focustalk.chart" . }}
   annotations:
     {{- if .Values.focustalkApp.ingress.annotations }}
 {{ toYaml .Values.focustalkApp.ingress.annotations | indent 4 }}

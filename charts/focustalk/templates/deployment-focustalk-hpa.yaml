@@ -7,16 +7,16 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
-    app.kubernetes.io/name: {{ include "mattermost.name" . }}
+    app.kubernetes.io/name: {{ include "focustalk.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart:  {{ include "mattermost.chart" . }}
-  name: {{ include "mattermost.fullname" . }}
+    helm.sh/chart:  {{ include "focustalk.chart" . }}
+  name: {{ include "focustalk.fullname" . }}
 spec:
   scaleTargetRef:
-    apiVersion: {{ template "mattermost.deployment.apiVersion" . }}
+    apiVersion: {{ template "focustalk.deployment.apiVersion" . }}
     kind: Deployment
-    name: {{ include "mattermost.fullname" . }}
+    name: {{ include "focustalk.fullname" . }}
   minReplicas: {{ .Values.focustalkApp.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.focustalkApp.autoscaling.maxReplicas }}
   metrics:

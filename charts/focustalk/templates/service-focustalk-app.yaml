@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "mattermost.fullname" . }}
+  name: {{ include "focustalk.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "mattermost.name" . }}
+    app.kubernetes.io/name: {{ include "focustalk.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart:  {{ include "mattermost.chart" . }}
+    helm.sh/chart:  {{ include "focustalk.chart" . }}
 spec:
   selector:
-    app.kubernetes.io/name: {{ include "mattermost.name" . }}
+    app.kubernetes.io/name: {{ include "focustalk.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: server
