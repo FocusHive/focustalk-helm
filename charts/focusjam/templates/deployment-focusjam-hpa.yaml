@@ -1,4 +1,4 @@
-{{- if .Values.focustalkApp.autoscaling.enabled }}
+{{- if .Values.focusjamApp.autoscaling.enabled }}
 {{- if semverCompare ">= 1.25-0" .Capabilities.KubeVersion.Version }}
 apiVersion: autoscaling/v2
 {{ else }}
@@ -7,21 +7,21 @@ apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
   labels:
-    app.kubernetes.io/name: {{ include "focustalk.name" . }}
+    app.kubernetes.io/name: {{ include "focusjam.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart:  {{ include "focustalk.chart" . }}
-  name: {{ include "focustalk.fullname" . }}
+    helm.sh/chart:  {{ include "focusjam.chart" . }}
+  name: {{ include "focusjam.fullname" . }}
 spec:
   scaleTargetRef:
-    apiVersion: {{ template "focustalk.deployment.apiVersion" . }}
+    apiVersion: {{ template "focusjam.deployment.apiVersion" . }}
     kind: Deployment
-    name: {{ include "focustalk.fullname" . }}
-  minReplicas: {{ .Values.focustalkApp.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.focustalkApp.autoscaling.maxReplicas }}
+    name: {{ include "focusjam.fullname" . }}
+  minReplicas: {{ .Values.focusjamApp.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.focusjamApp.autoscaling.maxReplicas }}
   metrics:
 {{- if semverCompare ">= 1.25-0" .Capabilities.KubeVersion.Version }}
-  {{- with .Values.focustalkApp.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- with .Values.focusjamApp.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
@@ -29,7 +29,7 @@ spec:
           type: Utilization
           averageUtilization: {{ . }}
   {{- end }}
-  {{- with .Values.focustalkApp.autoscaling.targetCPUUtilizationPercentage }}
+  {{- with .Values.focusjamApp.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
@@ -38,13 +38,13 @@ spec:
           averageUtilization: {{ . }}
   {{- end }}
 {{- else }}
-  {{- with .Values.focustalkApp.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- with .Values.focusjamApp.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         targetAverageUtilization: {{ . }}
   {{- end }}
-  {{- with .Values.focustalkApp.autoscaling.targetCPUUtilizationPercentage }}
+  {{- with .Values.focusjamApp.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu

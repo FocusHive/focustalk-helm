@@ -1,15 +1,13 @@
-# Mattermost Helm Chart (No Operator)
+# FocusJam Helm Chart (No Operator)
 
-This Helm chart deploys Mattermost Enterprise Edition without the Mattermost Operator, specifically designed for environments where you want to manage database and file storage separately.
+This Helm chart deploys FocusJam (compatible with Mattermost Enterprise Edition) without an operator, specifically designed for environments where you want to manage database and file storage separately.
 
 ## When to Use This Chart
-
-**Use the [Mattermost Operator](../mattermost-operator/) if possible** - it provides better lifecycle management, automated upgrades, and simplified operations.
 
 **Use this chart if:**
 - You cannot create `ClusterRole` or `ClusterRoleBinding` resources (restricted RBAC permissions)
 - You need a minimal deployment without operator overhead
-- You prefer direct control over Mattermost configuration
+- You prefer direct control over FocusJam configuration
 
 ## Key Features
 
@@ -32,7 +30,7 @@ Before deploying, you must have:
 1. **External Database**: PostgreSQL 11+
    - Database and user created
    - Connection string ready
-   
+
 2. **External File Storage**: S3-compatible object storage (AWS S3, GCS, MinIO, etc.)
    - Bucket created
    - Access credentials ready
@@ -47,7 +45,7 @@ We recommend Helm v3.x or later. See: https://helm.sh/docs/intro/install/
 
 ## 1.4 (Optional) Ingress Controller
 
-To expose Mattermost outside your cluster, you'll need an ingress controller. For GDC deployments, use the ingress controller provided by your platform.
+To expose FocusJam outside your cluster, you'll need an ingress controller. For GDC deployments, use the ingress controller provided by your platform.
 
 For other environments, we recommend [nginx-ingress](https://kubernetes.github.io/ingress-nginx/).
 
@@ -57,46 +55,46 @@ Create a `values.yaml` file with your configuration. Here's a minimal example:
 
 ```yaml
 global:
-  siteUrl: "https://mattermost.example.com"
+  siteUrl: "https://focusjam.example.com"
   mattermostLicense: "YOUR_LICENSE_KEY_HERE"
-  
+
   features:
     database:
       driver: "postgres"
-      dataSource: "postgres://user:password@hostname:5432/mattermost?sslmode=require"
-    
+      dataSource: "postgres://user:password@hostname:5432/focusjam?sslmode=require"
+
     fileStore:
       driver: "amazons3"
-      bucket: "my-mattermost-bucket"
+      bucket: "my-focusjam-bucket"
       region: "us-east-1"
       # Option 1: Use existing secret (recommended)
       existingSecret:
-        name: "mattermost-s3-creds"  # Name of your Kubernetes Secret
+        name: "focusjam-s3-creds"  # Name of your Kubernetes Secret
         accessKeyIdKey: "accessKeyId"  # Key in secret with access key ID
         secretAccessKeyKey: "secretAccessKey"  # Key in secret with secret key
       # Option 2: Provide credentials directly (not recommended for production)
       # accessKeyId: "YOUR_ACCESS_KEY"
       # secretAccessKey: "YOUR_SECRET_KEY"
 
-mattermostApp:
+focusjamApp:
   replicaCount: 2
-  
+
   ingress:
     enabled: true
     hosts:
-      - mattermost.example.com
+      - focusjam.example.com
     tls:
-      - secretName: mattermost-tls
+      - secretName: focusjam-tls
         hosts:
-          - mattermost.example.com
+          - focusjam.example.com
 ```
 
 ## 2.1 Required Settings
 
 **Minimum required configuration:**
 
-1. `global.siteUrl` - URL users will access Mattermost at
-2. `global.mattermostLicense` - Your Mattermost Enterprise license (optional, but recommended)
+1. `global.siteUrl` - URL users will access FocusJam at
+2. `global.mattermostLicense` - Your Enterprise license (optional, but recommended)
 3. `global.features.database.driver` - Database type: `postgres`
 4. `global.features.database.dataSource` - Database connection string
 5. `global.features.fileStore.driver` - File storage driver: `amazons3` or `local`
@@ -115,16 +113,16 @@ global:
   features:
     database:
       existingDatabaseSecret:
-        name: mattermost-db-secret
+        name: focusjam-db-secret
         key: connection-string
 ```
 
 ## 2.3 File Storage Configuration
 
-Configure S3-compatible storage via environment variables in `mattermostApp.extraEnv`. Create a Kubernetes secret for credentials:
+Configure S3-compatible storage via environment variables in `focusjamApp.extraEnv`. Create a Kubernetes secret for credentials:
 
 ```bash
-kubectl create secret generic mattermost-s3-credentials \
+kubectl create secret generic focusjam-s3-credentials \
   --from-literal=access-key-id=YOUR_ACCESS_KEY \
   --from-literal=secret-access-key=YOUR_SECRET_KEY
 ```
@@ -136,15 +134,15 @@ Ingress is **optional** - you can use `kubectl port-forward`, a LoadBalancer ser
 To enable NGINX Ingress for external access:
 
 ```yaml
-mattermostApp:
+focusjamApp:
   ingress:
     enabled: true
     hosts:
-      - mattermost.example.com
+      - focusjam.example.com
     tls:
-      - secretName: mattermost-tls
+      - secretName: focusjam-tls
         hosts:
-          - mattermost.example.com
+          - focusjam.example.com
     annotations:
       kubernetes.io/ingress.class: nginx
       nginx.ingress.kubernetes.io/proxy-body-size: 50m
@@ -156,10 +154,10 @@ mattermostApp:
 **Alternative access methods:**
 ```bash
 # Port forwarding (development)
-kubectl port-forward svc/mattermost-app 8065:8065
+kubectl port-forward svc/focusjam-app 8065:8065
 
 # Or configure as LoadBalancer
-mattermostApp:
+focusjamApp:
   service:
     type: LoadBalancer
 ```
@@ -194,8 +192,8 @@ When enabled, the main application pods will delegate background tasks (schedule
 Install the chart from this repository:
 
 ```bash
-cd charts/mattermost
-helm install mattermost . -f values.yaml
+cd charts/focusjam
+helm install focusjam . -f values.yaml
 ```
 
 ## 3.2 Upgrade
@@ -203,7 +201,7 @@ helm install mattermost . -f values.yaml
 To upgrade an existing release:
 
 ```bash
-helm upgrade mattermost . -f values.yaml
+helm upgrade focusjam . -f values.yaml
 ```
 
 ## 3.3 Uninstall
@@ -211,7 +209,7 @@ helm upgrade mattermost . -f values.yaml
 To remove the deployment:
 
 ```bash
-helm uninstall mattermost
+helm uninstall focusjam
 ```
 
 # 4. Verification
@@ -220,16 +218,16 @@ After installation, verify the deployment:
 
 ```bash
 # Check pod status
-kubectl get pods -l app.kubernetes.io/name=mattermost
+kubectl get pods -l app.kubernetes.io/name=focusjam
 
 # Check logs
-kubectl logs -l app.kubernetes.io/name=mattermost
+kubectl logs -l app.kubernetes.io/name=focusjam
 
 # Test connectivity (if using ClusterIP)
-kubectl port-forward svc/mattermost-app 8065:8065
+kubectl port-forward svc/focusjam-app 8065:8065
 ```
 
-Then access Mattermost at http://localhost:8065 (or your configured ingress URL).
+Then access FocusJam at http://localhost:8065 (or your configured ingress URL).
 
 # 5. Scaling
 
@@ -238,13 +236,13 @@ Then access Mattermost at http://localhost:8065 (or your configured ingress URL)
 To scale horizontally, increase the replica count:
 
 ```yaml
-mattermostApp:
+focusjamApp:
   replicaCount: 3
 ```
 
 Or scale directly with kubectl:
 ```bash
-kubectl scale deployment mattermost --replicas=5
+kubectl scale deployment focusjam --replicas=5
 ```
 
 **Note:** For multi-replica deployments, ensure your file storage is accessible from all pods (use S3-compatible storage, not local).
@@ -254,8 +252,8 @@ kubectl scale deployment mattermost --replicas=5
 HPA can automatically scale replicas based on CPU/memory usage, but it requires:
 
 **Prerequisites:**
-- ✅ Kubernetes metrics-server installed in your cluster
-- ✅ Resource requests/limits defined in `mattermostApp.resources`
+- Kubernetes metrics-server installed in your cluster
+- Resource requests/limits defined in `focusjamApp.resources`
 
 **Check if metrics-server is available:**
 ```bash
@@ -264,14 +262,14 @@ kubectl get apiservice v1beta1.metrics.k8s.io
 
 **Enable HPA:**
 ```yaml
-mattermostApp:
+focusjamApp:
   autoscaling:
     enabled: true
     minReplicas: 2
     maxReplicas: 10
     targetCPUUtilizationPercentage: 70
     targetMemoryUtilizationPercentage: 70
-  
+
   # Required for HPA
   resources:
     requests:
@@ -308,9 +306,9 @@ For local development and testing:
 
 ```bash
 # Dry run to see generated manifests
-helm install mattermost . -f values.yaml --dry-run --debug
+helm install focusjam . -f values.yaml --dry-run --debug
 
 # Use kind for local Kubernetes cluster
 kind create cluster
-helm install mattermost . -f values.yaml
+helm install focusjam . -f values.yaml
 ```

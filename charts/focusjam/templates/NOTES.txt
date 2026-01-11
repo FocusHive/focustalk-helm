@@ -1,0 +1,29 @@
+FocusJam has been deployed!
+
+IMPORTANT: This is a minimal deployment requiring external database and file storage.
+Make sure you have configured:
+  - External database connection (PostgreSQL)
+  - File storage via environment variables (S3, GCS, etc.)
+
+Get the application URL by running these commands:
+{{- if .Values.focusjamApp.ingress.enabled }}
+  Ingress is enabled. Access FocusJam at:
+  {{- range $host := .Values.focusjamApp.ingress.hosts }}
+    http{{ if $.Values.focusjamApp.ingress.tls }}s{{ end }}://{{ $host }}
+  {{- end}}
+{{- else if contains "NodePort" .Values.focusjamApp.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "focusjam.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.focusjamApp.service.type }}
+  NOTE: It may take a few minutes for the LoadBalancer IP to be available.
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "focusjam.fullname" . }} -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+  echo http://$SERVICE_IP:{{ .Values.focusjamApp.service.externalPort }}
+{{- else if contains "ClusterIP"  .Values.focusjamApp.service.type }}
+  export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "focusjam.name" . }}" -o jsonpath="{.items[0].metadata.name}")
+  echo "Visit http://127.0.0.1:8065 to use your application"
+  kubectl port-forward $POD_NAME 8065:{{ .Values.focusjamApp.service.externalPort }}
+{{- end }}
+
+To check the status of your deployment:
+  kubectl get pods --namespace {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "focusjam.name" . }}"

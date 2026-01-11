@@ -1,7 +1,7 @@
 global:
-  # REQUIRED: URL users will access Focus Talk at
-  siteUrl: "https://talk.focushive.example.com"
-  # OPTIONAL: Focus Talk Enterprise license (compatible with Mattermost Enterprise)
+  # REQUIRED: URL users will access FocusJam at
+  siteUrl: "https://jam.focushive.example.com"
+  # OPTIONAL: FocusJam Enterprise license (compatible with Mattermost Enterprise)
   # Option 1: Provide license content directly
   mattermostLicense: ""
   # Option 2: Use an existing secret
@@ -32,11 +32,11 @@ global:
       accessKeyId: ""
       secretAccessKey: ""
       # Option 2: Use an existing Kubernetes Secret (recommended)
-      # Example: kubectl create secret generic focustalk-s3-creds \
+      # Example: kubectl create secret generic focusjam-s3-creds \
       #   --from-literal=accessKeyId=YOUR_KEY \
       #   --from-literal=secretAccessKey=YOUR_SECRET
       existingSecret:
-        name: "" # Name of the Kubernetes Secret (e.g., "focustalk-s3-creds")
+        name: "" # Name of the Kubernetes Secret (e.g., "focusjam-s3-creds")
         accessKeyIdKey: "accessKeyId" # Key in the secret containing access key ID
         secretAccessKeyKey: "secretAccessKey" # Key in the secret containing secret access key
 
@@ -50,18 +50,18 @@ global:
         rollingUpdate: null
       revisionHistoryLimit: 2
       service:
-        name: focustalk-app-jobserver
+        name: focusjam-app-jobserver
         type: ClusterIP
       nodeSelector: {}
       affinity: {}
       tolerations: []
       extraEnv: []
 
-# Focus Talk deployment section.
-focustalkApp:
+# FocusJam deployment section.
+focusjamApp:
   replicaCount: 2
   image:
-    repository: ghcr.io/focushive/focustalk-server
+    repository: ghcr.io/focushive/focusjam-server
     tag: "1.0.0"
     pullPolicy: IfNotPresent
   # Image pull secrets for private registries
@@ -77,23 +77,23 @@ focustalkApp:
   revisionHistoryLimit: 2
 
   service:
-    name: focustalk-app
+    name: focusjam-app
     type: ClusterIP
     externalPort: 8065
     internalPort: 8065
     metricsPort: 8067
     clusterPort: 8075 # Required for cluster communication between replicas
     gossipPort: 8074 # Required for gossip protocol between replicas
-    metricsName: focustalk-app-metrics
+    metricsName: focusjam-app-metrics
 
   ingress:
     enabled: false
     hosts:
-      - talk.focushive.example.com
+      - jam.focushive.example.com
     tls: []
-      # - secretName: focustalk-tls
+      # - secretName: focusjam-tls
       #   hosts:
-      #     - talk.focushive.example.com
+      #     - jam.focushive.example.com
     annotations: {}
       # kubernetes.io/ingress.class: nginx
       # nginx.ingress.kubernetes.io/proxy-buffering: "on"
@@ -101,7 +101,7 @@ focustalkApp:
       # nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
       # nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
       # nginx.ingress.kubernetes.io/configuration-snippet: |
-      #   proxy_cache focustalk_cache;
+      #   proxy_cache focusjam_cache;
       #   proxy_cache_revalidate on;
       #   proxy_cache_min_uses 2;
       #   proxy_cache_use_stale timeout;

@@ -1,0 +1,20 @@
+apiVersion: v2
+description: FocusJam team collaboration and messaging server deployment.
+name: focusjam
+type: application
+version: 1.0.0
+appVersion: 1.0.0
+keywords:
+- focusjam
+- focus-jam
+- communication
+- messaging
+- team collaboration
+home: https://focushive.com
+icon: https://raw.githubusercontent.com/FocusHive/FocusJam/main/webapp/channels/src/images/logo.png
+maintainers:
+  - name: FocusHive
+    email: info@focushive.com
+sources:
+- https://github.com/FocusHive/FocusJam
+- https://github.com/FocusHive/focusjam-helm

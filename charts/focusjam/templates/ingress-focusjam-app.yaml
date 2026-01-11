@@ -1,31 +1,31 @@
-{{- if .Values.focustalkApp.ingress.enabled -}}
-{{- $serviceName := include "focustalk.fullname" . -}}
-{{- $servicePort := .Values.focustalkApp.service.externalPort -}}
-apiVersion: {{ include "focustalk.ingress.apiVersion" . }}
+{{- if .Values.focusjamApp.ingress.enabled -}}
+{{- $serviceName := include "focusjam.fullname" . -}}
+{{- $servicePort := .Values.focusjamApp.service.externalPort -}}
+apiVersion: {{ include "focusjam.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ include "focustalk.fullname" . }}
+  name: {{ include "focusjam.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "focustalk.name" . }}
+    app.kubernetes.io/name: {{ include "focusjam.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart:  {{ include "focustalk.chart" . }}
+    helm.sh/chart:  {{ include "focusjam.chart" . }}
   annotations:
-    {{- if .Values.focustalkApp.ingress.annotations }}
-{{ toYaml .Values.focustalkApp.ingress.annotations | indent 4 }}
+    {{- if .Values.focusjamApp.ingress.annotations }}
+{{ toYaml .Values.focusjamApp.ingress.annotations | indent 4 }}
     {{- end }}
-    {{- if .Values.focustalkApp.ingress.tls }}
+    {{- if .Values.focusjamApp.ingress.tls }}
     kubernetes.io/tls-acme: 'true'
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     {{- else }}
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     {{- end }}
 spec:
-  {{- if .Values.focustalkApp.ingress.ingressClassName }}
-  ingressClassName: {{ .Values.focustalkApp.ingress.ingressClassName }}
+  {{- if .Values.focusjamApp.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.focusjamApp.ingress.ingressClassName }}
   {{- end }}
   rules:
-  {{- range $host := .Values.focustalkApp.ingress.hosts }}
+  {{- range $host := .Values.focusjamApp.ingress.hosts }}
   - host: {{ $host }}
     http:
       paths:
@@ -43,8 +43,8 @@ spec:
           servicePort: {{ $servicePort }}
         {{- end }}
   {{- end -}}
-  {{- if .Values.focustalkApp.ingress.tls }}
+  {{- if .Values.focusjamApp.ingress.tls }}
   tls:
-{{ toYaml .Values.focustalkApp.ingress.tls | indent 4 }}
+{{ toYaml .Values.focusjamApp.ingress.tls | indent 4 }}
   {{- end -}}
 {{- end -}}

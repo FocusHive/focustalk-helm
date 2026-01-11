@@ -2,7 +2,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "focustalk.name" -}}
+{{- define "focusjam.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -11,7 +11,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "focustalk.fullname" -}}
+{{- define "focusjam.fullname" -}}
 {{- if .Values.fullnameOverride -}}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
@@ -27,7 +27,7 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "focustalk.chart" -}}
+{{- define "focusjam.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
@@ -36,7 +36,7 @@ Create chart name and version as used by the chart label.
 Create a fully qualified jobserver name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 */}}
-{{- define "focustalk.jobserver.fullname" -}}
+{{- define "focusjam.jobserver.fullname" -}}
 {{- $name := default .Chart.Name .Values.nameOverride -}}
 {{- printf "%s-%s-%s" .Release.Name $name .Values.global.features.jobserver.name | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
@@ -46,7 +46,7 @@ Return the appropriate apiVersion for ingress. Based on
 1) Helm Version (.Capabilities has been changed in v3)
 2) Kubernetes Version
 */}}
-{{- define "focustalk.ingress.apiVersion" -}}
+{{- define "focusjam.ingress.apiVersion" -}}
 {{- if .Capabilities.APIVersions.Has "networking.k8s.io/v1" -}}
 "networking.k8s.io/v1"
 {{- else if .Capabilities.APIVersions.Has "networking.k8s.io/v1beta1" -}}
@@ -56,6 +56,6 @@ Return the appropriate apiVersion for ingress. Based on
 {{- end -}}
 {{- end -}}
 
-{{- define "focustalk.deployment.apiVersion" -}}
+{{- define "focusjam.deployment.apiVersion" -}}
 "apps/v1"
 {{- end -}}

@@ -1,4 +1,4 @@
-mattermostApp:
+focusjamApp:
   replicaCount: 1
   persistence:
     pluginsServer:

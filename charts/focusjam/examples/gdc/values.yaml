@@ -1,12 +1,12 @@
 # =========================================================
-# Mattermost on GDC - Helm value example
+# FocusJam on GDC - Helm value example
 # =========================================================
 
 global:
-  # REQUIRED: URL users will access Mattermost at
-  siteUrl: "https://your-mattermost-url.gdch.test"  # Update with your actual URL
+  # REQUIRED: URL users will access FocusJam at
+  siteUrl: "https://your-focusjam-url.gdch.test"  # Update with your actual URL
 
-  # OPTIONAL: Mattermost Enterprise license
+  # OPTIONAL: FocusJam Enterprise license
   mattermostLicense: ""  # Or use existingLicenseSecret
 
   # Option 2: Use an existing secret
@@ -24,7 +24,7 @@ global:
       dataSource: ""  # Not used when existingDatabaseSecret is provided
       dataSourceReplicas: []
       existingDatabaseSecret:
-        name: "mattermost-db-secret"
+        name: "focusjam-db-secret"
         key: "MM_CONFIG"
 
     # -------------------------------------------------------
@@ -33,12 +33,12 @@ global:
     fileStore:
       driver: "amazons3"
       url: "objectstorage.org-1.zone1.google.gdch.test"  # GDC S3 endpoint
-      bucket: "aai2ns2-mattermost"
+      bucket: "aai2ns2-focusjam"
       region: ""  # Leave empty for GDC
 
       # Option 1: Create a secret for S3 credentials (recommended)
       existingSecret:
-        name: "mattermost-s3-credentials"  # Create this secret
+        name: "focusjam-s3-credentials"  # Create this secret
         accessKeyIdKey: "accessKeyId"
         secretAccessKeyKey: "secretAccessKey"
 
@@ -53,14 +53,14 @@ global:
       enabled: false
 
 # =========================================================
-# Mattermost deployment section
+# FocusJam deployment section
 # =========================================================
-mattermostApp:
+focusjamApp:
   replicaCount: 3  # Matches your deployment
 
   image:
-    repository: user-haas-instance-user-project.org-1.zone1.google.gdch.test/mattermost/mattermost-enterprise-edition
-    tag: "11.0.2" # Update to the latest version uploaded to Harbor registry
+    repository: user-haas-instance-user-project.org-1.zone1.google.gdch.test/focusjam/focusjam-server
+    tag: "1.0.0" # Update to the latest version uploaded to Harbor registry
     pullPolicy: IfNotPresent
 
   # Image pull secret for private registry
@@ -76,19 +76,19 @@ mattermostApp:
   revisionHistoryLimit: 2
 
   service:
-    name: mattermost-app
+    name: focusjam-app
     type: ClusterIP
     externalPort: 8065
     internalPort: 8065
     metricsPort: 8067
     clusterPort: 8075
     gossipPort: 8074
-    metricsName: mattermost-app-metrics
+    metricsName: focusjam-app-metrics
 
   ingress:
     enabled: false  # Set to true if you want to expose via ingress
     hosts:
-      - your-mattermost-url.gdch.test
+      - your-focusjam-url.gdch.test
     tls: []
     annotations: {}
     ingressClassName: ""
@@ -121,7 +121,7 @@ mattermostApp:
     - name: org-root-ca
       configMap:
         name: org-root-ca
-    - name: mattermost-data
+    - name: focusjam-data
       emptyDir: {}
 
   extraVolumeMounts:
@@ -129,7 +129,7 @@ mattermostApp:
       mountPath: /etc/ssl/certs/org-root-ca.pem
       subPath: org-root-ca.pem
       readOnly: true
-    - name: mattermost-data
+    - name: focusjam-data
       mountPath: /mattermost/data
 
   # Custom environment variables for GDC CA certificates

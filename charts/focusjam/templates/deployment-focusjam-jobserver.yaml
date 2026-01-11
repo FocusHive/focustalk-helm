@@ -2,13 +2,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "focustalk.jobserver.fullname" . }}
+  name: {{ include "focusjam.jobserver.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ include "focustalk.name" . }}
+    app.kubernetes.io/name: {{ include "focusjam.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}
     app.kubernetes.io/managed-by: {{ .Release.Service }}
     app.kubernetes.io/component: {{ .Values.global.features.jobserver.name }}
-    helm.sh/chart:  {{ include "focustalk.chart" . }}
+    helm.sh/chart:  {{ include "focusjam.chart" . }}
 spec:
   replicas: {{ .Values.global.features.jobserver.replicaCount }}
   {{- with .Values.global.features.jobserver.strategy }}
@@ -18,21 +18,21 @@ spec:
   revisionHistoryLimit: {{ .Values.global.features.jobserver.revisionHistoryLimit }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "focustalk.name" . }}
+      app.kubernetes.io/name: {{ include "focusjam.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
       app.kubernetes.io/managed-by: {{ .Release.Service }}
       app.kubernetes.io/component: {{ .Values.global.features.jobserver.name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "focustalk.name" . }}
+        app.kubernetes.io/name: {{ include "focusjam.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
         app.kubernetes.io/managed-by: {{ .Release.Service }}
         app.kubernetes.io/component: {{ .Values.global.features.jobserver.name }}
-        helm.sh/chart: {{ include "focustalk.chart" . }}
+        helm.sh/chart: {{ include "focusjam.chart" . }}
       annotations:
-        {{- if .Values.focustalkApp.extraPodAnnotations }}
-        {{- .Values.focustalkApp.extraPodAnnotations | toYaml | nindent 8 }}
+        {{- if .Values.focusjamApp.extraPodAnnotations }}
+        {{- .Values.focusjamApp.extraPodAnnotations | toYaml | nindent 8 }}
         {{- end }}
     spec:
       {{- if .Values.global.features.jobserver.nodeSelector }}
@@ -47,18 +47,18 @@ spec:
       tolerations:
       {{- toYaml .Values.global.features.jobserver.tolerations | nindent 6 }}
       {{- end }}
-      {{- if .Values.focustalkApp.securityContext }}
+      {{- if .Values.focusjamApp.securityContext }}
       securityContext:
-        {{- toYaml .Values.focustalkApp.securityContext | nindent 8 }}
+        {{- toYaml .Values.focusjamApp.securityContext | nindent 8 }}
       {{- end }}
-      {{- if .Values.focustalkApp.imagePullSecrets }}
+      {{- if .Values.focusjamApp.imagePullSecrets }}
       imagePullSecrets:
-      {{- toYaml .Values.focustalkApp.imagePullSecrets | nindent 6 }}
+      {{- toYaml .Values.focusjamApp.imagePullSecrets | nindent 6 }}
       {{- end }}
       containers:
-      - name: {{ include "focustalk.name" . }}-jobserver
-        image: "{{ .Values.focustalkApp.image.repository }}:{{ .Values.focustalkApp.image.tag }}"
-        imagePullPolicy: {{ .Values.focustalkApp.image.pullPolicy }}
+      - name: {{ include "focusjam.name" . }}-jobserver
+        image: "{{ .Values.focusjamApp.image.repository }}:{{ .Values.focusjamApp.image.tag }}"
+        imagePullPolicy: {{ .Values.focusjamApp.image.pullPolicy }}
         command: ["mattermost", "jobserver"]
         env:
         - name: MM_CONFIG
@@ -68,8 +68,8 @@ spec:
               name: {{ .Values.global.features.database.existingDatabaseSecret.name }}
               key: {{ .Values.global.features.database.existingDatabaseSecret.key }}
            {{- else }}
-              name: {{ include "focustalk.fullname" . }}-focustalk-dbsecret
-              key: focustalk.dbsecret
+              name: {{ include "focusjam.fullname" . }}-focusjam-dbsecret
+              key: focusjam.dbsecret
            {{- end }}
         {{- with .Values.global.features.jobserver.extraEnv }}
         {{- toYaml . | nindent 8 }}
@@ -82,7 +82,7 @@ spec:
         {{- else }}
         - mountPath: /mattermost/mattermost.mattermost-license
           name: mattermost-license
-          subPath: focustalk.mattermost-license
+          subPath: focusjam.mattermost-license
         {{- end }}
       volumes:
       - name: mattermost-license
@@ -90,7 +90,7 @@ spec:
           {{- if .Values.global.existingLicenseSecret.name }}
           secretName: {{ .Values.global.existingLicenseSecret.name }}
           {{- else }}
-          secretName: {{ include "focustalk.fullname" . }}-mattermost-license
+          secretName: {{ include "focusjam.fullname" . }}-mattermost-license
           {{- end }}
 
 {{- end -}}
